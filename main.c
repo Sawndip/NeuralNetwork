@@ -21,5 +21,9 @@ int main() {
         printf("OUTPUT[%d]: %d\n", i, output[i]);
     }
 
+	 
+	 
+	 freeNeuralNetwork(net);
+
     return 0;
 }

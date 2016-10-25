@@ -1,7 +1,10 @@
 #ifndef NEURON_H
 #define NEURON_H
 
-#include "NeuralMath.h"
+#include <time.h>
+#include <stdlib.h>
+
+double randomDouble(double min, double max);
 
 struct Perceptron {
     int n_inputs;
@@ -34,6 +37,7 @@ struct NeuralNetwork {
 };
 
 struct NeuralNetwork *createNeuralNetwork(int n_in, int n_out, int num_l, int *n_layer_neurons);
+void  freeNeuralNetwork(struct NeuralNetwork* n);
 int *UpdateNetwork(struct NeuralNetwork *net, int *inputs);
 
 #endif

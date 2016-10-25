@@ -1,9 +1,12 @@
 #define MAKE(a) (a*)malloc(sizeof(a));
 #define MAKE_ARRAY(a,b) (a*)malloc(sizeof(a)*(b));
 
-#include <stdlib.h>
-
+#include <stdio.h>
 #include "Neuron.h"
+
+double randomDouble(double min, double max) { 
+   return ((max-min) * (rand() / (double)RAND_MAX))+min;
+}
 
 //Perceptron Functions
 struct Perceptron createPerceptron(int n_inputs) {
@@ -17,6 +20,10 @@ struct Perceptron createPerceptron(int n_inputs) {
     }
 
     return p;
+}
+
+void freePerceptron(struct Perceptron *p) {
+	free(p->weights);
 }
 
 int perceptronOutput(struct Perceptron *p, int *inputs) {
@@ -47,7 +54,15 @@ struct NeuralLayer createNeuralLayer(int n_neur, int n_input_neur) {
     return n;
 }
 
-int * neuralLayerUpdate(struct NeuralLayer *l, int *inputs) {
+void freeNeuralLayer(struct NeuralLayer *nl) {
+	//free perceptrons
+	for (int i=0; i < nl->n_neurons; i++) {
+		freePerceptron(&nl->neurons[i]);
+	}
+	free(nl->neurons);
+}
+
+int* neuralLayerUpdate(struct NeuralLayer *l, int *inputs) {
 	int *output = MAKE_ARRAY(int, l->n_neurons);
 
 	for (int i=0; i < l->n_neurons; i++) {
@@ -79,21 +94,30 @@ struct NeuralNetwork *createNeuralNetwork(int n_in, int n_out, int n_l, int *n_l
 }
 
 int *UpdateNetwork(struct NeuralNetwork *net, int *inputs) {
-    //First feed inputs to first layer
-    //Assume inputs has the correct number
-    int *output=0;
+   //First feed inputs to first layer
+	//Assume inputs has the correct number
+	int *output=0;
 
-    for (int i=0; i < net->n_hlayers; ++i) { //For each layer
-        //Create output for current layer
-        //Delete Previous 
-        if (output) {
-		inputs = output;
-        }
+	for (int i=0; i < net->n_hlayers; ++i) { //For each layer
+ 		//Create output for current layer
+		//Delete Previous 
+		if (output) {
+			inputs = output;
+		}
 
-	output = neuralLayerUpdate(&net->layers[i], inputs);
-
-    }
+		output = neuralLayerUpdate(&net->layers[i], inputs);
+   }
 
    return output;
-
 }
+
+void  freeNeuralNetwork(struct NeuralNetwork* n) {
+	//free neural layers
+	for (int i=0; i <= n->n_hlayers; ++i) {
+		freeNeuralLayer(&n->layers[i]);
+	}
+
+	free(n->layers);
+	free(n);
+}
+

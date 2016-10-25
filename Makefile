@@ -1,5 +1,5 @@
-neuralTest: main.o Neuron.o NeuralMath.o
-	cc -o neuralTest main.o Neuron.o NeuralMath.o
+neuralTest: main.o Neuron.o
+	cc -o neuralTest main.o Neuron.o
 
 main.o: main.c
 	cc -c main.c
@@ -7,5 +7,3 @@ main.o: main.c
 Neuron.o: Neuron.c Neuron.h
 	cc -c Neuron.c
 
-NeuralMath.o: NeuralMath.c NeuralMath.h
-	cc -c NeuralMath.c
